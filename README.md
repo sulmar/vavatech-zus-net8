@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Welcome! This is the course repository for Tworzenie usług sieciowych w .NET 8
+Welcome! This is the course repository for **Tworzenie usług sieciowych w .NET 8**
 
 To take this course you'll need the following.
 

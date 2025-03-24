@@ -1,17 +1,21 @@
 using Sakila.Api.Extensions;
 using Sakila.Api.Services;
+using Serilog;
+using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// https://learn.microsoft.com/en-us/dotnet/core/extensions/console-log-formatter
-builder.Logging.AddJsonConsole(options =>
-{
-    options.IncludeScopes = false;
-    options.JsonWriterOptions = new System.Text.Json.JsonWriterOptions
-    {
-        Indented = true
-    };
-});
+
+builder.Logging.ClearProviders();
+
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()              // Serilog.Sinks.Console
+    .WriteTo.File("log.txt")   //Serilog.Sinks.File
+    .WriteTo.File(new CompactJsonFormatter(), "log.json") // Serilog.Formatting.Compact
+    .CreateLogger();
+
+// dotnet add package Serilog.Extensions.Logging
+builder.Logging.AddSerilog(logger);
 
 string environmentName = builder.Environment.EnvironmentName;
 
@@ -27,7 +31,7 @@ builder.AddFakeRepositories();
 builder.Services.Configure<NbpApiCurrencyServiceOptions>(builder.Configuration.GetSection("NbpApiService"));
 
 var app = builder.Build();
-app.MapApi();   
+app.MapApi();
 
 //var level = app.Configuration["Logging:LogLevel:Microsoft.AspNetCore"];
 //var url1 = app.Configuration.GetValue<string>("NbpApiService:Url");

@@ -482,3 +482,5 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+/src/Sakila.Api/log.json
+/src/Sakila.Api/log.txt

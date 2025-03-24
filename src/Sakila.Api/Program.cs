@@ -1,7 +1,3 @@
-
-using Sakila.Api.Domain.Abstractions;
-using Sakila.Api.Domain.Models;
-using Sakila.Api.DTO;
 using Sakila.Api.Endpoints;
 using Sakila.Api.Extensions;
 
@@ -10,40 +6,10 @@ builder.AddFakeRepositories();
 
 var app = builder.Build();
 
-
-app.MapGet("/", () => "Hello, World!");
-
-var homeHandler = () => "Hello, World!";
-
-app.MapGet("/", homeHandler);
-
+app.MapGroup("/").MapRootApi();
 app.MapGroup("/customers").MapCustomersApi();
 app.MapGroup("/orders").MapOrdersApi();
-
-
-app.Map("/test", (HttpContext context) =>
-{
-    HttpRequest request = context.Request;
-
-    var requestMethod = context.Request.Method;
-    var requestPath = context.Request.Path;
-    var id = context.Request.Query["id"];
-    var name = context.Request.Query["name"];
-
-    HttpResponse response = context.Response;
-});
-
-app.MapGet("/hello", (HttpRequest req, HttpResponse res) => Results.Ok("Hello World!"));
-
-app.MapGet("/products/{id:int}", (int id, IProductRepository repository) => // Zastosowanie Match Pattern
-    repository.Get(id) switch 
-    {
-        Product product => Results.Ok(product),
-        _ => Results.NotFound()
-    }
-);
-
-app.MapPost("/products", (AddProductRequest request) => Results.Ok(request));
+app.MapGroup("/products").MapProductsApi();
 
 app.Run();
 

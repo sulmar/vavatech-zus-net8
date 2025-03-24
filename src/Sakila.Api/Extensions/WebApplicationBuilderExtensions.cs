@@ -1,6 +1,7 @@
 ﻿using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.Domain.Models;
 using Sakila.Api.Infrastructure;
+using Sakila.Api.Services;
 
 namespace Sakila.Api.Extensions;
 
@@ -17,6 +18,9 @@ public static class WebApplicationBuilderExtensions
         new Product { Id = 3, Name = $"Product 3", Description = "Lorem ipsum", Price = 100m },
         ]
         );
+
+
+        builder.Services.AddTransient<ICurrencyService, NbpApiCurrencyService>();
 
         return builder;
     }

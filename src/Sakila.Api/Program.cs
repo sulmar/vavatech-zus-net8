@@ -43,16 +43,13 @@ app.Map("/test", (HttpContext context) =>
 
 app.MapGet("/hello", (HttpRequest req, HttpResponse res) => Results.Ok("Hello World!"));
 
-app.MapGet("/products/{id:int}", (int id, IProductRepository repository) =>
-{
-    var product = repository.Get(id);
-
-    if (product == null)
-        return Results.NotFound();
-
-    return Results.Ok(product);
-
-});
+app.MapGet("/products/{id:int}", (int id, IProductRepository repository) => // Zastosowanie Match Pattern
+    repository.Get(id) switch 
+    {
+        Product product => Results.Ok(product),
+        _ => Results.NotFound()
+    }
+);
 
 app.MapPost("/products", (AddProductRequest request) => Results.Ok(request));
 

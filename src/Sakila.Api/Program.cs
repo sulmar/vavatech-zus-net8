@@ -3,10 +3,20 @@ using Sakila.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// https://learn.microsoft.com/en-us/dotnet/core/extensions/console-log-formatter
+builder.Logging.AddJsonConsole(options =>
+{
+    options.IncludeScopes = false;
+    options.JsonWriterOptions = new System.Text.Json.JsonWriterOptions
+    {
+        Indented = true
+    };
+});
+
 string environmentName = builder.Environment.EnvironmentName;
 
 builder.Configuration.AddJsonFile("appsettings.json");
-builder.Configuration.AddJsonFile($"appsettings.{environmentName}.json", optional: true);
+builder.Configuration.AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true);
 builder.Configuration.AddXmlFile("appsettings.xml");
 builder.Configuration.AddUserSecrets<Program>();
 builder.Configuration.AddCommandLine(args); // --NbpApiService:Table=B

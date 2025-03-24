@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Sakila.Api.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
+
 var app = builder.Build();
 
 

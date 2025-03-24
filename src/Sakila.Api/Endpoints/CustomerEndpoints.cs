@@ -54,10 +54,13 @@ public static class CustomerEndpoints
         // json-patch
         // Content-Type: application/json-patch+json
         // { "op": "replace", "path": "/HomeAddress/City", "value": "Kraków" }
-
         // dotnet add package Microsoft.AspNetCore.JsonPatch
+
+        // json-merge-patch
+        // Content-Type: application/merge-patch+json
+
         // PATCH /customers/{id}
-        group.MapPatch("/{id:int}", (int id, JsonPatchDocument<UpdateCustomerRequest> request) =>
+        group.MapPatch("/{id:int}", (int id, [FromBody] JsonPatchDocument<UpdateCustomerRequest> request) =>
         {
             var customer = new UpdateCustomerRequest
             {
@@ -78,9 +81,11 @@ public static class CustomerEndpoints
         });
 
 
+        group.MapDelete("/{id:int}", (int id) => $"Customer {id} Deleted.");
 
-        group.MapDelete("/", () => "Customer Deleted.");
+        // Czy zasób istnieje
         group.MapMethods("/", new[] { "HEAD" }, () => "HEAD");
+
 
 
         //                              | REST API

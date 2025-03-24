@@ -1,0 +1,5 @@
+﻿<Configuration>
+	<NbpApiService>
+		<Table>C</Table>
+	</NbpApiService>
+</Configuration>

@@ -9,6 +9,17 @@
     }
   },
   "profiles": {
+    "slawek": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "launchUrl": "/",
+      "applicationUrl": "https://localhost:7285",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Staging"
+      }
+    },
+
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,

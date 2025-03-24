@@ -2,7 +2,7 @@
 
 public static class OrderEndpoints
 {
-    public static RouteGroupBuilder MapOrdersApi(this  RouteGroupBuilder group)
+    public static RouteGroupBuilder MapOrdersApi(this RouteGroupBuilder group)
     {
 
         group.MapGet("/", () => "Hello Orders!");

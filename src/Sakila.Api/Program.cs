@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.Domain.Models;
 using Sakila.Api.Extensions;
@@ -48,6 +49,10 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 var app = builder.Build();
+
+app.UseStaticFiles(); // Obs³uga ¿¹dañ statycznych plików (np. stron, zdjêæ, skryptów, styli)
+
+
 app.MapApi();
 
 app.MapGet("/test", (ICurrencyService service1, IServiceProvider serviceProvider) =>
@@ -56,6 +61,14 @@ app.MapGet("/test", (ICurrencyService service1, IServiceProvider serviceProvider
     var service3 = serviceProvider.GetRequiredService<ICurrencyService>();
 
     return Results.Ok();
+
+});
+
+app.MapGet("/html", ([FromQuery] string name) =>
+{
+    string html = $"<h1>{name}</h1>";
+
+    return Results.Content(html, "text/html");
 
 });
 

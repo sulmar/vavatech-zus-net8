@@ -1,5 +1,6 @@
 using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.Extensions;
+using Sakila.Api.Mappers;
 using Sakila.Api.Services;
 using Serilog;
 using Serilog.Formatting.Compact;
@@ -28,7 +29,7 @@ builder.Configuration.AddCommandLine(args); // --NbpApiService:Table=B
 builder.Configuration.AddInMemoryCollection();
 
 builder.AddFakeRepositories();
-
+builder.Services.AddTransient<OrderMapper>();
 
 builder.Services.Configure<NbpApiCurrencyServiceOptions>(builder.Configuration.GetSection("NbpApiService"));
 

@@ -36,6 +36,8 @@ builder.Services.Configure<NbpApiCurrencyServiceOptions>(builder.Configuration.G
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    // options.SerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve; // Zawiera referencje zamiast zapêtlonych struktur
+    // options.SerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles; // Zawiera wartoœæ null zamiast zapêtlonych struktur
 });
 
 var app = builder.Build();

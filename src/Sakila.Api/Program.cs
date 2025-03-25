@@ -73,6 +73,14 @@ app.MapGet("/html", ([FromQuery] string name) =>
 
 });
 
+
+app.MapPost("/login", (HttpContext context) =>
+{
+    var username = context.Request.Form["username"].ToString();
+    var password = context.Request.Form["password"].ToString();
+
+});
+
 //var level = app.Configuration["Logging:LogLevel:Microsoft.AspNetCore"];
 //var url1 = app.Configuration.GetValue<string>("NbpApiService:Url");
 var googleMapsKey = app.Configuration["GoogleMaps"];

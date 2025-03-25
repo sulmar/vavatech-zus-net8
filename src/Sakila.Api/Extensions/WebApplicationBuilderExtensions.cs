@@ -41,10 +41,25 @@ public static class WebApplicationBuilderExtensions
         });
 
 
+        builder.Services.AddTransient<IEnumerable<Order>>(sp =>
+        {
+            var orders = new List<Order>()
+            {
+                new RetailOrder { Id = 1, CustomerEmail = "biuro@vavatech.pl", OrderDate = DateTime.Parse("2025-03-25"), TotalAmount = 100 },
+                new RetailOrder { Id = 2, CustomerEmail = "biuro@vavatech.pl", OrderDate = DateTime.Parse("2025-03-25"), TotalAmount = 200 },
+                new SubscriptionOrder { Id = 3, OrderDate = DateTime.Parse("2025-03-25"), TotalAmount = 200, PeriodMonths = 12 },
+            };
+
+            return orders;
+
+        });
 
 
         builder.Services.AddScoped<ICurrencyService, ForexApiCurrencyService>();
         builder.Services.AddScoped<ICurrencyService, NbpApiCurrencyService>();
+
+
+        builder.Services.AddScoped<IOrderRepository, FakeOrderRepository>();   
 
 
         return builder;

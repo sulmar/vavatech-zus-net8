@@ -1,4 +1,7 @@
-﻿namespace Sakila.Api.Endpoints;
+﻿using Sakila.Api.Domain.Abstractions;
+using Sakila.Api.Domain.Models;
+
+namespace Sakila.Api.Endpoints;
 
 public static class OrderEndpoints
 {
@@ -6,7 +9,9 @@ public static class OrderEndpoints
     {
 
         group.MapGet("/", () => "Hello Orders!");
-        group.MapGet("/{id:int}", (int id) => $"Hello Order {id}!");
+        group.MapGet("/{id:int}", (int id, IOrderRepository repository) => repository.Get(id));
+
+        group.MapPost("/", (Order order) => Results.Ok(order));
 
         return group;
 

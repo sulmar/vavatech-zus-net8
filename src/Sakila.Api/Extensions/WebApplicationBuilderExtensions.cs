@@ -40,14 +40,18 @@ public static class WebApplicationBuilderExtensions
             return products;
         });
 
+        
+
 
         builder.Services.AddTransient<IEnumerable<Order>>(sp =>
         {
+            var customer = new Customer { Id = 1, Name = "Vavatech", HashedPassword = "123" };
+
             var orders = new List<Order>()
             {
-                new RetailOrder { Id = 1, CustomerEmail = "biuro@vavatech.pl", OrderDate = DateTime.Parse("2025-03-25"), TotalAmount = 100 },
-                new RetailOrder { Id = 2, CustomerEmail = "biuro@vavatech.pl", OrderDate = DateTime.Parse("2025-03-25"), TotalAmount = 200 },
-                new SubscriptionOrder { Id = 3, OrderDate = DateTime.Parse("2025-03-25"), TotalAmount = 200, PeriodMonths = 12 },
+                new RetailOrder { Id = 1, CustomerEmail = "biuro@vavatech.pl", OrderDate = DateTime.Parse("2025-03-25"), TotalAmount = 100, Customer = customer },
+                new RetailOrder { Id = 2, CustomerEmail = "biuro@vavatech.pl", OrderDate = DateTime.Parse("2025-03-25"), TotalAmount = 200, Customer = customer },
+                new SubscriptionOrder { Id = 3, OrderDate = DateTime.Parse("2025-03-25"), TotalAmount = 200, PeriodMonths = 12, Customer = customer },
             };
 
             return orders;

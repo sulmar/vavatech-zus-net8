@@ -5,6 +5,7 @@ using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.Domain.Models;
 using Sakila.Api.DTO;
 using Sakila.Api.Extensions;
+using Sakila.Api.Filters;
 using Sakila.Api.Mappers;
 using Sakila.Api.Services;
 using Sakila.Api.Validators;
@@ -70,6 +71,13 @@ app.UseSwaggerUI();
 
 app.MapApi();
 
+app.MapGet("/filter", async () =>
+{
+    await Task.Delay(Random.Shared.Next(500, 2000));
+
+    return Results.Ok("Hello, World!");
+}).AddEndpointFilter<StopwatchFilter>();
+
 app.MapGet("/test", (ICurrencyService service1, IServiceProvider serviceProvider) =>
 {
     var service2 = serviceProvider.GetRequiredService<ICurrencyService>();
@@ -110,7 +118,7 @@ app.MapPost("/upload", async (IFormFile file) =>
     {
         var filePath = Path.Combine("Uploads", file.FileName);
 
-        using(var stream = new FileStream(filePath, FileMode.Create))
+        using (var stream = new FileStream(filePath, FileMode.Create))
         {
             await file.CopyToAsync(stream);
         }

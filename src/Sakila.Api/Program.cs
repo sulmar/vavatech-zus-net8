@@ -1,3 +1,4 @@
+using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.Extensions;
 using Sakila.Api.Services;
 using Serilog;
@@ -28,10 +29,20 @@ builder.Configuration.AddInMemoryCollection();
 
 builder.AddFakeRepositories();
 
+
 builder.Services.Configure<NbpApiCurrencyServiceOptions>(builder.Configuration.GetSection("NbpApiService"));
 
 var app = builder.Build();
 app.MapApi();
+
+app.MapGet("/test", (ICurrencyService service1, IServiceProvider serviceProvider) =>
+{
+    var service2 = serviceProvider.GetRequiredService<ICurrencyService>();
+    var service3 = serviceProvider.GetRequiredService<ICurrencyService>();
+
+    return Results.Ok();
+
+});
 
 //var level = app.Configuration["Logging:LogLevel:Microsoft.AspNetCore"];
 //var url1 = app.Configuration.GetValue<string>("NbpApiService:Url");

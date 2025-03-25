@@ -20,7 +20,7 @@ public static class WebApplicationBuilderExtensions
         );
 
 
-        builder.Services.AddTransient<ICurrencyService, NbpApiCurrencyService>();
+        builder.Services.AddScoped<ICurrencyService, NbpApiCurrencyService>();
 
         return builder;
     }

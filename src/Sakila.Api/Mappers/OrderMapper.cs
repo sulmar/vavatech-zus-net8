@@ -1,18 +1,12 @@
-﻿using Sakila.Api.Domain.Models;
+﻿using Riok.Mapperly.Abstractions;
+using Sakila.Api.Domain.Models;
 using Sakila.Api.DTO;
 
 namespace Sakila.Api.Mappers;
 
-public class OrderMapper
+[Mapper]
+public partial class OrderMapper
 {
-    public OrderDto Map(Order order)
-    {
-        return new OrderDto 
-        {  
-            Id = order.Id, 
-            OrderDate = order.OrderDate, 
-            TotalAmount = order.TotalAmount,
-            CustomerName = order.Customer.Name
-        };
-    }
+    public partial OrderDto Map(Order order);
+
 }

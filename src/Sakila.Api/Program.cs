@@ -55,11 +55,18 @@ builder.Services.Configure<FormOptions>(options =>
     options.MultipartBodyLengthLimit = 1 * 1024 * 1024; // 1 MB
 });
 
+
+builder.Services.AddSwaggerGen();
+builder.Services.AddEndpointsApiExplorer();
+
 var app = builder.Build();
 
 app.UseDefaultFiles(); // Obs³uga domyœlnych stron default.htm, default.html, index.htm, index.html
 app.UseStaticFiles(); // Obs³uga ¿¹dañ statycznych plików (np. stron, zdjêæ, skryptów, styli)
 
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapApi();
 

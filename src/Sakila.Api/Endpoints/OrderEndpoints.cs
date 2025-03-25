@@ -1,4 +1,5 @@
-﻿using Sakila.Api.Domain.Abstractions;
+﻿using FluentValidation;
+using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.Domain.Models;
 using Sakila.Api.Mappers;
 using System.ComponentModel.DataAnnotations;
@@ -13,22 +14,23 @@ public static class OrderEndpoints
         group.MapGet("/", () => "Hello Orders!");
         group.MapGet("/{id:int}", (int id, IOrderRepository repository, OrderMapper mapper) => mapper.Map(repository.Get(id)));
 
-        group.MapPost("/", (Order order) =>
+        group.MapPost("/", (Order order, IValidator<Order> validator) =>
         {
-            ICollection<ValidationResult> validationResults = new List<ValidationResult>();
+            var validationResult = validator.Validate(order);
 
-            var context = new ValidationContext(order);
-            bool isValid = Validator.TryValidateObject(order, context, validationResults, true);
-
-            if (!isValid)
+            if (!validationResult.IsValid)
             {
-                return Results.ValidationProblem(validationResults.ToDictionary(
-                    result => result.MemberNames.First(),
-                    result => new[] { result.ErrorMessage }));
+                var errors = validationResult.Errors
+                 .GroupBy(error => error.PropertyName)
+                 .ToDictionary(
+                    group => group.Key,
+                    group => group.Select(error => error.ErrorMessage).ToArray());
+
+                return Results.ValidationProblem(errors);
             }
 
 
-           return Results.Ok(order);
+            return Results.Ok(order);
         });
 
         return group;

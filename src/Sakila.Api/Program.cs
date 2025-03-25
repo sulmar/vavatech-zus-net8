@@ -1,7 +1,10 @@
+using FluentValidation;
 using Sakila.Api.Domain.Abstractions;
+using Sakila.Api.Domain.Models;
 using Sakila.Api.Extensions;
 using Sakila.Api.Mappers;
 using Sakila.Api.Services;
+using Sakila.Api.Validators;
 using Serilog;
 using Serilog.Formatting.Compact;
 
@@ -30,6 +33,9 @@ builder.Configuration.AddInMemoryCollection();
 
 builder.AddFakeRepositories();
 builder.Services.AddTransient<OrderMapper>();
+
+builder.Services.AddScoped<IValidator<Order>, OrderValidator>();
+builder.Services.AddScoped<IValidator<Customer>, CustomerValidator>();
 
 builder.Services.Configure<NbpApiCurrencyServiceOptions>(builder.Configuration.GetSection("NbpApiService"));
 

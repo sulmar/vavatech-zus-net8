@@ -27,6 +27,8 @@ public class Customer
     [Compare(nameof(ConfirmPassword))]
     public string HashedPassword { get; set; }
     public string ConfirmPassword { get; set; }
+
+    public string Pesel { get; set; }
 }
 
 public class RetailOrder : Order

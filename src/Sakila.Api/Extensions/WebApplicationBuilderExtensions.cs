@@ -10,6 +10,7 @@ public static class WebApplicationBuilderExtensions
     public static WebApplicationBuilder AddFakeRepositories(this WebApplicationBuilder builder)
     {
         builder.Services.AddTransient<IProductRepository, FakeProductRepository>();
+        builder.Services.Decorate<IProductRepository, CurrencyProductRepository>(); // dotnet add package Scrutor
 
         builder.Services.AddTransient<IEnumerable<Product>>(sp =>
             [
@@ -20,11 +21,13 @@ public static class WebApplicationBuilderExtensions
         );
 
 
+        builder.Services.AddScoped<ICurrencyService, ForexApiCurrencyService>();
         builder.Services.AddScoped<ICurrencyService, NbpApiCurrencyService>();
+
 
         return builder;
     }
 
 
-  
+
 }

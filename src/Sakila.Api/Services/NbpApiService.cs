@@ -10,6 +10,13 @@ public class NbpApiCurrencyServiceOptions
     public string Symbol { get; set; }
 }
 
+public class ForexApiCurrencyService : ICurrencyService
+{
+    public decimal GetCurrencyRatio(string symbol)
+    {
+        throw new NotImplementedException();
+    }
+}
 
 public class NbpApiCurrencyService : ICurrencyService
 {

@@ -9,11 +9,9 @@ public static class ProductEndpoints
 {
     public static RouteGroupBuilder MapProductsApi(this RouteGroupBuilder group)
     {
-        group.MapGet("/{id:int}", (int id, IProductRepository repository, ICurrencyService currencyService) =>
+        group.MapGet("/{id:int}", (int id, IProductRepository repository) =>
         {
             Product product = repository.Get(id);
-
-            product.Price = product.Price * currencyService.GetCurrencyRatio("EUR");
 
             if (product == null)
                 return Results.NotFound();

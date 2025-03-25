@@ -4,8 +4,6 @@ public static class ContextEndpoints
 {
     public static RouteGroupBuilder MapRootApi(this RouteGroupBuilder group)
     {
-        group.MapGet("/", () => "Hello, World!");
-        
         var homeHandler = () => "Hello, World!";
 
         group.MapGet("/home", homeHandler);

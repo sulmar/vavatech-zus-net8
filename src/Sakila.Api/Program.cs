@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.Domain.Models;
@@ -49,6 +50,11 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     // options.SerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles; // Zawiera wartoœæ null zamiast zapêtlonych struktur
 });
 
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 1 * 1024 * 1024; // 1 MB
+});
+
 var app = builder.Build();
 
 app.UseDefaultFiles(); // Obs³uga domyœlnych stron default.htm, default.html, index.htm, index.html
@@ -90,6 +96,24 @@ app.MapPost("/login2", (HttpContext context) =>
     var password = context.Request.Form["password"].ToString();
 
 });
+
+app.MapPost("/upload", async (IFormFile file) =>
+{
+    if (file.Length > 0)
+    {
+        var filePath = Path.Combine("Uploads", file.FileName);
+
+        using(var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        return Results.Ok(new { Filepath = filePath });
+    }
+
+    return Results.BadRequest("Invalid file");
+
+}).DisableAntiforgery();
 
 
 //var level = app.Configuration["Logging:LogLevel:Microsoft.AspNetCore"];

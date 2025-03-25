@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.Domain.Models;
+using Sakila.Api.DTO;
 using Sakila.Api.Extensions;
 using Sakila.Api.Mappers;
 using Sakila.Api.Services;
@@ -74,12 +75,22 @@ app.MapGet("/html", ([FromQuery] string name) =>
 });
 
 
-app.MapPost("/login", (HttpContext context) =>
+// Atrybut [FromForm] pozwala na deserializacjê obiektu zakodowanego za pomoc¹ x-www-form-urlencoded
+app.MapPost("/login", ([FromForm] LoginRequest request) =>
+{
+    var username = request.Username;
+    var password = request.Password;
+
+}).DisableAntiforgery();
+
+
+app.MapPost("/login2", (HttpContext context) =>
 {
     var username = context.Request.Form["username"].ToString();
     var password = context.Request.Form["password"].ToString();
 
 });
+
 
 //var level = app.Configuration["Logging:LogLevel:Microsoft.AspNetCore"];
 //var url1 = app.Configuration.GetValue<string>("NbpApiService:Url");

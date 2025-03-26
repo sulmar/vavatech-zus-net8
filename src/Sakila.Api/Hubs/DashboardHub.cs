@@ -15,6 +15,9 @@ public class DashboardHub : Hub
     {
         logger.LogInformation("Connected {ConnectionId}", Context.ConnectionId);
 
+        // TODO: dodać uwierzytelnianie
+        // Groups.AddToGroupAsync(Context.ConnectionId, "Blue");
+
         return base.OnConnectedAsync();
     }
 

@@ -1,0 +1,32 @@
+﻿@page "/product/{id:int}"
+@using Sakila.Models
+@inject IHttpClientFactory HttpClientFactory
+
+<h3>Product</h3>
+
+@if (product == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h1>@product.Name</h1>
+    <p>@product.Description</p>
+}
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private Product? product;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var client = HttpClientFactory.CreateClient("sakilaClient");
+
+        product = await client.GetFromJsonAsync<Product>($"/products/{Id}");
+    }
+
+
+}

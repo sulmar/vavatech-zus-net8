@@ -6,6 +6,7 @@ using Sakila.Api.Extensions;
 using Sakila.Api.Filters;
 using Sakila.Api.Hubs;
 using Sakila.Api.Middlewares;
+using Sakila.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddHostedService<DashboardBackgroundService>();
 builder.Services.AddSignalR();
+
+builder.Services.AddSingleton<OcrService>();
 
 var app = builder.Build();
 
@@ -120,14 +123,24 @@ app.MapPost("/upload", async (IFormFile file) =>
 }).DisableAntiforgery();
 
 
-app.MapPost("/documents", async () =>
+app.MapPost("/documents", (IFormFile file, OcrService service) =>
 {
-    // await Task.Delay(TimeSpan.FromMinutes(10));
+    //if (files == null || files.Count() == 0)
+    //    return Results.BadRequest("Brak przes³anych plików");
 
-    // TODO: dodajemy do kolejki
+    for(int i=0; i<file.Length; i++)
+    {        
+        service.Add(file);
+    }
+
+
+        //foreach (var file in files)
+        //{
+        //    service.Add(file);
+        //}
 
     return Results.Accepted();
-});
+}).DisableAntiforgery();
 
 app.MapGet("/documents/{id:int}", (int id) =>
 {
@@ -136,6 +149,7 @@ app.MapGet("/documents/{id:int}", (int id) =>
 
 
 app.MapHub<DashboardHub>("/signalr/dashboard");
+app.MapHub<DocumentHub>("/signalr/documents");
 
 
 //var level = app.Configuration["Logging:LogLevel:Microsoft.AspNetCore"];

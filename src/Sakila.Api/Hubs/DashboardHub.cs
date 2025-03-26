@@ -2,6 +2,11 @@
 
 namespace Sakila.Api.Hubs;
 
+public class DocumentHub : Hub
+{
+
+}
+
 public class DashboardHub : Hub
 {
     private readonly ILogger<DashboardHub> logger;

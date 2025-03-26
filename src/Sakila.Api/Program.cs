@@ -1,31 +1,15 @@
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.DTO;
 using Sakila.Api.Extensions;
 using Sakila.Api.Filters;
-using Sakila.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.AddSerilogLogging(); // U¿ycie metody rozszerzaj¹cej
 builder.Configuration.AddCustomConfiguration(builder, args); // U¿ycie metody rozszerzaj¹cej
 builder.Services.AddCustomServices(); // U¿ycie metody rozszerzaj¹cej
-
-builder.Services.Configure<NbpApiCurrencyServiceOptions>(builder.Configuration.GetSection("NbpApiService"));
-
-builder.Services.ConfigureHttpJsonOptions(options =>
-{
-    options.SerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
-    // options.SerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve; // Zawiera referencje zamiast zapêtlonych struktur
-    // options.SerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles; // Zawiera wartoœæ null zamiast zapêtlonych struktur
-});
-
-builder.Services.Configure<FormOptions>(options =>
-{
-    options.MultipartBodyLengthLimit = 1 * 1024 * 1024; // 1 MB
-});
-
+builder.Services.AddCustomConfigurations(builder.Configuration); // U¿ycie metody rozszerzaj¹cej
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();

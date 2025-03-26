@@ -1,6 +1,7 @@
 ﻿@page "/product/{id:int}"
+@using Sakila.BlazorWasmApp.Services
 @using Sakila.Models
-@inject IHttpClientFactory HttpClientFactory
+@inject SakilaApiClient Api
 
 <h3>Product</h3>
 
@@ -23,9 +24,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var client = HttpClientFactory.CreateClient("sakilaClient");
-
-        product = await client.GetFromJsonAsync<Product>($"/products/{Id}");
+        product = await Api.GetProduct(Id);
     }
 
 

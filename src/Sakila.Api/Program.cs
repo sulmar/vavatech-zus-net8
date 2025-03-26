@@ -3,6 +3,7 @@ using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.DTO;
 using Sakila.Api.Extensions;
 using Sakila.Api.Filters;
+using Sakila.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,31 +18,10 @@ builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 
 // Logger
-app.Use(async (context, next) =>
-{
-    Console.WriteLine($"{context.Request.Method} {context.Request.Path}");
-
-    await next(context);
-
-    Console.WriteLine($"{context.Response.StatusCode}");
-});
-
+app.UseMiddleware<LoggerMiddleware>();
 
 // Authorize
-app.Use(async (context, next) =>
-{
-    var authorizeSecretKey = context.Request.Headers["x-secret-key"];
-
-    if (authorizeSecretKey.ToString() != "abc")
-    {
-        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-
-        return;
-    }
-
-    await next(context);
-
-});
+app.UseMiddleware<AuthorizeMiddleware>();
 
 
 // Under Construction

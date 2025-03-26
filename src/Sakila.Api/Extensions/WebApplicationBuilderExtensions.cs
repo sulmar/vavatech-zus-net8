@@ -13,12 +13,23 @@ public static class ServiceExtensions
     public static IServiceCollection AddCustomServices(this IServiceCollection services)
     {
         services.AddFakeRepositories(); // Jeśli masz metodę rozszerzającą dla repozytoriów
+        services.AddMappers();
+        services.AddValidators();
 
+        return services;
+    }
+
+    public static IServiceCollection AddMappers(this IServiceCollection services)
+    {
         services.AddTransient<OrderMapper>();
 
+        return services;    
+    }
+
+    public static IServiceCollection AddValidators(this IServiceCollection services)
+    {
         services.AddScoped<IValidator<Order>, OrderValidator>();
         services.AddScoped<IValidator<Customer>, CustomerValidator>();
-
 
         return services;
     }
@@ -83,7 +94,4 @@ public static class ServiceExtensions
 
         return services;
     }
-
-
-
 }

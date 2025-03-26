@@ -120,6 +120,21 @@ app.MapPost("/upload", async (IFormFile file) =>
 }).DisableAntiforgery();
 
 
+app.MapPost("/documents", async () =>
+{
+    // await Task.Delay(TimeSpan.FromMinutes(10));
+
+    // TODO: dodajemy do kolejki
+
+    return Results.Accepted();
+});
+
+app.MapGet("/documents/{id:int}", (int id) =>
+{
+    return Results.Ok();
+});
+
+
 app.MapHub<DashboardHub>("/signalr/dashboard");
 
 

@@ -15,10 +15,14 @@ builder.Services.AddCustomConfigurations(builder.Configuration); // U¿ycie metod
 builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddResponseCompression();
+
 var app = builder.Build();
 
+app.UseStopwatch();
 app.UseLogger();
-app.UseAuthorize();
+// app.UseAuthorize();
+app.UseResponseCompression();    // W³¹czenie kompresji odpowiedzi
 
 // Under Construction
 //app.Run(async (context) =>
@@ -27,7 +31,7 @@ app.UseAuthorize();
 
 //    context.Response.StatusCode = 500;
 
-//});
+//});   
 
 app.UseDefaultFiles(); // Obs³uga domyœlnych stron default.htm, default.html, index.htm, index.html
 app.UseStaticFiles(); // Obs³uga ¿¹dañ statycznych plików (np. stron, zdjêæ, skryptów, styli)

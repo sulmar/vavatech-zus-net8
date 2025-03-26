@@ -16,6 +16,43 @@ builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
+// Logger
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"{context.Request.Method} {context.Request.Path}");
+
+    await next(context);
+
+    Console.WriteLine($"{context.Response.StatusCode}");
+});
+
+
+// Authorize
+app.Use(async (context, next) =>
+{
+    var authorizeSecretKey = context.Request.Headers["x-secret-key"];
+
+    if (authorizeSecretKey.ToString() != "abc")
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+        return;
+    }
+
+    await next(context);
+
+});
+
+
+// Under Construction
+//app.Run(async (context) =>
+//{
+//    await context.Response.WriteAsync("Under construction");
+
+//    context.Response.StatusCode = 500;
+
+//});
+
 app.UseDefaultFiles(); // Obs³uga domyœlnych stron default.htm, default.html, index.htm, index.html
 app.UseStaticFiles(); // Obs³uga ¿¹dañ statycznych plików (np. stron, zdjêæ, skryptów, styli)
 

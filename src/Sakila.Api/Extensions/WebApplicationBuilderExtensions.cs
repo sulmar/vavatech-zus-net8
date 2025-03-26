@@ -1,18 +1,35 @@
-﻿using Sakila.Api.Domain.Abstractions;
+﻿using FluentValidation;
+using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.Domain.Models;
 using Sakila.Api.Infrastructure;
+using Sakila.Api.Mappers;
 using Sakila.Api.Services;
+using Sakila.Api.Validators;
 
 namespace Sakila.Api.Extensions;
 
-public static class WebApplicationBuilderExtensions
+public static class ServiceExtensions
 {
-    public static WebApplicationBuilder AddFakeRepositories(this WebApplicationBuilder builder)
+    public static IServiceCollection AddCustomServices(this IServiceCollection services)
     {
-        builder.Services.AddTransient<IProductRepository, FakeProductRepository>();
-        builder.Services.Decorate<IProductRepository, CurrencyProductRepository>(); // dotnet add package Scrutor
+        services.AddFakeRepositories(); // Jeśli masz metodę rozszerzającą dla repozytoriów
 
-        builder.Services.AddTransient<Category>(sp =>
+        services.AddTransient<OrderMapper>();
+
+        services.AddScoped<IValidator<Order>, OrderValidator>();
+        services.AddScoped<IValidator<Customer>, CustomerValidator>();
+
+
+        return services;
+    }
+    
+
+    public static IServiceCollection AddFakeRepositories(this IServiceCollection services)
+    {
+        services.AddTransient<IProductRepository, FakeProductRepository>();
+        services.Decorate<IProductRepository, CurrencyProductRepository>(); // dotnet add package Scrutor
+
+        services.AddTransient<Category>(sp =>
         {
             var category1 = new Category
             {
@@ -24,7 +41,7 @@ public static class WebApplicationBuilderExtensions
             return category1;
         });
 
-        builder.Services.AddTransient<IEnumerable<Product>>(sp =>
+        services.AddTransient<IEnumerable<Product>>(sp =>
         {
             var category = sp.GetService<Category>();
 
@@ -41,9 +58,7 @@ public static class WebApplicationBuilderExtensions
         });
 
         
-
-
-        builder.Services.AddTransient<IEnumerable<Order>>(sp =>
+        services.AddTransient<IEnumerable<Order>>(sp =>
         {
             var customer = new Customer { Id = 1, Name = "Vavatech", HashedPassword = "123" };
 
@@ -59,14 +74,14 @@ public static class WebApplicationBuilderExtensions
         });
 
 
-        builder.Services.AddScoped<ICurrencyService, ForexApiCurrencyService>();
-        builder.Services.AddScoped<ICurrencyService, NbpApiCurrencyService>();
+        services.AddScoped<ICurrencyService, ForexApiCurrencyService>();
+        services.AddScoped<ICurrencyService, NbpApiCurrencyService>();
 
 
-        builder.Services.AddScoped<IOrderRepository, FakeOrderRepository>();   
+        services.AddScoped<IOrderRepository, FakeOrderRepository>();   
 
 
-        return builder;
+        return services;
     }
 
 

@@ -1,48 +1,18 @@
-using FluentValidation;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Sakila.Api.Domain.Abstractions;
-using Sakila.Api.Domain.Models;
 using Sakila.Api.DTO;
 using Sakila.Api.Extensions;
 using Sakila.Api.Filters;
-using Sakila.Api.Mappers;
 using Sakila.Api.Services;
-using Sakila.Api.Validators;
-using Serilog;
-using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-builder.Logging.ClearProviders();
-
-var logger = new LoggerConfiguration()
-    .WriteTo.Console()              // Serilog.Sinks.Console
-    .WriteTo.File("log.txt")   //Serilog.Sinks.File
-    .WriteTo.File(new CompactJsonFormatter(), "log.json") // Serilog.Formatting.Compact
-    .CreateLogger();
-
-// dotnet add package Serilog.Extensions.Logging
-builder.Logging.AddSerilog(logger);
-
-string environmentName = builder.Environment.EnvironmentName;
-
-builder.Configuration.AddJsonFile("appsettings.json");
-builder.Configuration.AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true);
-builder.Configuration.AddXmlFile("appsettings.xml");
-builder.Configuration.AddUserSecrets<Program>();
-builder.Configuration.AddCommandLine(args); // --NbpApiService:Table=B
-builder.Configuration.AddInMemoryCollection();
-
-builder.AddFakeRepositories();
-builder.Services.AddTransient<OrderMapper>();
-
-builder.Services.AddScoped<IValidator<Order>, OrderValidator>();
-builder.Services.AddScoped<IValidator<Customer>, CustomerValidator>();
+builder.Logging.AddSerilogLogging(); // U¿ycie metody rozszerzaj¹cej
+builder.Configuration.AddCustomConfiguration(builder, args); // U¿ycie metody rozszerzaj¹cej
+builder.Services.AddCustomServices(); // U¿ycie metody rozszerzaj¹cej
 
 builder.Services.Configure<NbpApiCurrencyServiceOptions>(builder.Configuration.GetSection("NbpApiService"));
-
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {

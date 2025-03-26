@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Sakila.Api.BackgroundServices;
 using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.DTO;
 using Sakila.Api.Extensions;
 using Sakila.Api.Filters;
+using Sakila.Api.Hubs;
 using Sakila.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,11 +19,27 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddResponseCompression();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://localhost:7127");
+        policy.WithMethods("GET");
+        policy.AllowAnyHeader();
+    });
+});
+
+
+builder.Services.AddHostedService<DashboardBackgroundService>();
+builder.Services.AddSignalR();
+
 var app = builder.Build();
+
+app.UseCors();
 
 app.UseStopwatch();
 app.UseLogger();
-// app.UseAuthorize();
+//app.UseAuthorize();
 app.UseResponseCompression();    // W³¹czenie kompresji odpowiedzi
 
 // Under Construction
@@ -100,6 +118,9 @@ app.MapPost("/upload", async (IFormFile file) =>
     return Results.BadRequest("Invalid file");
 
 }).DisableAntiforgery();
+
+
+app.MapHub<DashboardHub>("/signalr/dashboard");
 
 
 //var level = app.Configuration["Logging:LogLevel:Microsoft.AspNetCore"];

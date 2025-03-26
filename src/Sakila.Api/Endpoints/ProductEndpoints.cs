@@ -1,4 +1,5 @@
-﻿using Sakila.Api.Domain.Abstractions;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.Domain.Models;
 using Sakila.Api.DTO;
 using Sakila.Api.Services;
@@ -22,7 +23,18 @@ public static class ProductEndpoints
 
 
 
-        group.MapPost("/", (AddProductRequest request) => Results.Ok(request));
+        group.MapPost("/", (AddProductRequest request) =>
+        {
+            // throw new Exception("Test");
+
+            return Results.Problem("Błędne dane");
+
+            // return Results.BadRequest("Błędne dane");
+
+
+
+            return Results.Ok(request);
+        });
 
         return group;
     }

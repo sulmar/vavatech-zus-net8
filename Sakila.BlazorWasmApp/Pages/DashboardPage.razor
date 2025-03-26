@@ -1,0 +1,52 @@
+﻿@page "/dashboard"
+@inject IConfiguration Configuration
+@using Sakila.Models
+@using Microsoft.AspNetCore.SignalR.Client
+@implements IAsyncDisposable
+
+<h3>Dashboard</h3>
+
+@if (info == null)
+{
+    <p>Waiting...</p>
+}
+else
+{
+    <p>Active Users: @info.ActiveUsers</p>
+    <p>Opened Issues: @info.OpenedIssues</p>
+}
+
+@code {
+
+    private Info? info;
+
+    // dotnet add package Microsoft.AspNetCore.SignalR.Client
+
+    private HubConnection connection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var baseUrl = Configuration["SakilaApiUrl"];
+
+        var url = $"{baseUrl}/signalr/dashboard";
+
+        connection = new HubConnectionBuilder()
+        .WithUrl(url)
+        .Build();
+
+        connection.On<Info>("DashboardChanged", message =>
+        {
+            info = message;
+
+            InvokeAsync(StateHasChanged);
+        });
+
+        await connection.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await connection.StopAsync();
+    }
+
+}

@@ -22,10 +22,12 @@ public class StopwatchFilter : IEndpointFilter
 {
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
-
+        // Przed wykonaniem endpointu
         var stopwatch = Stopwatch.StartNew();
 
         var result = await next(context);
+
+        // Po wykonaniu endpointu
 
         stopwatch.Stop();
 

@@ -21,9 +21,11 @@ public class AuthorizeMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        var authorizeSecretKey = context.Request.Headers["x-secret-key"];
+        var authorization = context.Request.Headers["Authorization"];
 
-        if (authorizeSecretKey.ToString() != "abc")
+        string accessToken = "abc";
+
+        if (authorization.ToString() != $"Bearer {accessToken}")
         {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
 

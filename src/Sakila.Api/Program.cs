@@ -17,12 +17,8 @@ builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
-// Logger
-app.UseMiddleware<LoggerMiddleware>();
-
-// Authorize
-app.UseMiddleware<AuthorizeMiddleware>();
-
+app.UseLogger();
+app.UseAuthorize();
 
 // Under Construction
 //app.Run(async (context) =>

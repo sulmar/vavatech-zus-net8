@@ -1,5 +1,15 @@
 ﻿namespace Sakila.Api.Middlewares;
 
+public static class AuthorizeMiddlewareExtensions
+{
+    public static IApplicationBuilder UseAuthorize(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<AuthorizeMiddleware>();
+
+        return app;
+    }
+}
+
 public class AuthorizeMiddleware
 {
     private readonly RequestDelegate next;

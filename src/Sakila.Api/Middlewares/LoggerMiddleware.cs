@@ -29,3 +29,4 @@ public class LoggerMiddleware
         Console.WriteLine($"{context.Response.StatusCode}");
     }
 }
+

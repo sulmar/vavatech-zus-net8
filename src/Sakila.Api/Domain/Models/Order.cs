@@ -4,8 +4,8 @@ using System.Text.Json.Serialization;
 namespace Sakila.Api.Domain.Models;
 
 // od .NET 8
-[JsonDerivedType(typeof(RetailOrder), "Retail")]
-[JsonDerivedType(typeof(SubscriptionOrder), "Subscription")]
+[JsonDerivedType(typeof(RetailOrder), "Retail")] // Zapisuje w jsonie dodatkowe pole $type="Retail"
+[JsonDerivedType(typeof(SubscriptionOrder), "Subscription")] // Zapisuje w jsonie dodatkowe pole $type="Subscription"
 public abstract class Order
 {
     public int Id { get; set; }

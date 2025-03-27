@@ -123,21 +123,17 @@ app.MapPost("/upload", async (IFormFile file) =>
 }).DisableAntiforgery();
 
 
-app.MapPost("/documents", (IFormFile file, OcrService service) =>
+app.MapPost("/documents", async (HttpContext context, OcrService service) =>
 {
-    //if (files == null || files.Count() == 0)
-    //    return Results.BadRequest("Brak przes³anych plików");
+    var files = context.Request.Form.Files;
 
-    for(int i=0; i<file.Length; i++)
-    {        
+    if (files == null || files.Count() == 0)
+        return Results.BadRequest("Brak przes³anych plików");
+
+    foreach (var file in files)
+    {
         service.Add(file);
     }
-
-
-        //foreach (var file in files)
-        //{
-        //    service.Add(file);
-        //}
 
     return Results.Accepted();
 }).DisableAntiforgery();

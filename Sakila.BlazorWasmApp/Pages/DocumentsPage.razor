@@ -1,0 +1,45 @@
+﻿@page "/documents"
+@inject IConfiguration Configuration
+@using Sakila.Models
+@using Microsoft.AspNetCore.SignalR.Client
+
+<ul>
+    @foreach(var filename in filenames)
+    {
+        <li>@filename </li>
+    }
+</ul>
+
+
+@code {
+
+    private HubConnection connection;
+
+    private List<string> filenames = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var baseUrl = Configuration["SakilaApiUrl"];
+
+        var url = $"{baseUrl}/signalr/documents";
+
+        connection = new HubConnectionBuilder()
+        .WithUrl(url)
+        .Build();
+
+        connection.On<string>("Processed", filename =>
+        {
+            filenames.Add(filename);
+
+            InvokeAsync(StateHasChanged);
+        });
+
+        await connection.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await connection.StopAsync();
+    }
+
+}

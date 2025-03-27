@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package fleet;
+
+service DriverService {
+	rpc StreamMessages (DriverRequest) returns (stream DriverMessage);
+}
+
+message DriverRequest {
+	string driver_id = 1;
+}
+
+message DriverMessage {
+	string title = 1;
+	string content = 2;
+}

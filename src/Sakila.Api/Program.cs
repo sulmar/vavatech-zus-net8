@@ -34,7 +34,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddHostedService<DashboardBackgroundService>();
 builder.Services.AddSignalR();
 
-builder.Services.AddSingleton<OcrService>();
+builder.Services.AddSingleton<IOcrService, ChannelOcrService>();
 
 var app = builder.Build();
 
@@ -123,7 +123,7 @@ app.MapPost("/upload", async (IFormFile file) =>
 }).DisableAntiforgery();
 
 
-app.MapPost("/documents", async (HttpContext context, OcrService service) =>
+app.MapPost("/documents", async (HttpContext context, IOcrService service) =>
 {
     var files = context.Request.Form.Files;
 
@@ -132,7 +132,7 @@ app.MapPost("/documents", async (HttpContext context, OcrService service) =>
 
     foreach (var file in files)
     {
-        service.Add(file);
+        await service.AddAsync(file);
     }
 
     return Results.Accepted();

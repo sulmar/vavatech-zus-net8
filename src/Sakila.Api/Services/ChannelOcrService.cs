@@ -1,35 +1,34 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Sakila.Api.Hubs;
-using System.Collections.Concurrent;
+using System.Threading.Channels;
 
 namespace Sakila.Api.Services;
 
-public class OcrService
+public class ChannelOcrService : IOcrService
 {
-    private BlockingCollection<IFormFile> files = new();
-
-    private ILogger<OcrService> logger;
+    private readonly Channel<IFormFile> files = Channel.CreateUnbounded<IFormFile>();
+    private ILogger<BlockingCollectionOcrService> logger;
     private readonly IHubContext<DocumentHub> hubContext;
 
-    public OcrService(ILogger<OcrService> logger, IHubContext<DocumentHub> hubContext)
+    public ChannelOcrService(ILogger<BlockingCollectionOcrService> logger, IHubContext<DocumentHub> hubContext)
     {
         this.logger = logger;
         this.hubContext = hubContext;
         Task.Run(() => ProcessFilesAsync());
     }
 
-    public void Add(IFormFile file)
+    public async Task AddAsync(IFormFile file)
     {
-        files.Add(file);
+        await files.Writer.WriteAsync(file);
     }
+
 
     public async Task ProcessFilesAsync()
     {
-        foreach (var file in files.GetConsumingEnumerable())
+        await foreach (var file in files.Reader.ReadAllAsync())
         {
             logger.LogInformation("Przetwarzanie pliku {FileName}...", file.FileName);
 
-            
 
             await SimulateOcrProcessingAsync(file);
 
@@ -43,7 +42,5 @@ public class OcrService
     {
         await Task.Delay(TimeSpan.FromSeconds(10));
     }
-
-
 
 }

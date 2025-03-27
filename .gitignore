@@ -484,3 +484,6 @@ $RECYCLE.BIN/
 *.swp
 /src/Sakila.Api/log.json
 /src/Sakila.Api/log.txt
+/src/Monitoring.Web/HealthChecks.db
+/src/Monitoring.Web/HealthChecks.db-shm
+/src/Monitoring.Web/HealthChecks.db-wal

@@ -1,5 +1,7 @@
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Sakila.Api;
 using Sakila.Api.BackgroundServices;
 using Sakila.Api.Domain.Abstractions;
@@ -46,6 +48,32 @@ builder.Services.AddGraphQLServer().AddQueryType<Query>();
 
 builder.Services.AddDbContext<SakilaContext>(options => options.UseInMemoryDatabase("sakilaDb"));
 
+builder.Services.AddHealthChecks()
+    .AddCheck("Ping", () => HealthCheckResult.Healthy())
+    .AddCheck("Random", () => DateTime.Now.Minute % 2 == 0 ? HealthCheckResult.Healthy() : HealthCheckResult.Unhealthy(description: "Nieparzyste minuty"))
+    .AddCheck("Upload", () =>
+    {
+        var filepath = System.IO.Path.Combine("Uploads", "check.txt");
+        try
+        {
+            File.Create(filepath).Close();
+
+            return HealthCheckResult.Healthy();
+
+        }
+        catch (IOException e)
+        {
+            return HealthCheckResult.Degraded();
+        }
+
+        finally
+        {
+            File.Delete(filepath);
+        }
+    })  // AspNetCore.HealthChecks.SignalR
+    .AddSignalRHub("https://localhost:7285/signalr/documents", "SignalR Hub Documents")
+    .AddSignalRHub("https://localhost:7285/signalr/dashboard", "SignalR Hub Dashboard");
+
 var app = builder.Build();
 
 var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<SakilaContext>();
@@ -75,6 +103,14 @@ app.UseStaticFiles(); // Obs³uga ¿¹dañ statycznych plików (np. stron, zdjêæ, skr
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.MapGet("/ping", () => "pong");
+
+// dotnet add package AspNetCore.HealthChecks.UI.Client
+app.MapHealthChecks("/hc", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.MapApi();
 
@@ -173,7 +209,7 @@ app.Map("/sse", async context =>
         await context.Response.WriteAsync($"data: zdarzenie {i}\n\n");
         await context.Response.Body.FlushAsync();
 
-        await Task.Delay(5000);     
+        await Task.Delay(5000);
     }
 });
 

@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Api", "Tracking.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.ConsoleClient", "Tracking.ConsoleClient\Tracking.ConsoleClient.csproj", "{1F263591-53CB-4505-A123-2C5725601532}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitoring.Web", "Monitoring.Web\Monitoring.Web.csproj", "{FA66DBFB-F837-43E8-8845-66F1FDF0E50E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{1F263591-53CB-4505-A123-2C5725601532}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F263591-53CB-4505-A123-2C5725601532}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F263591-53CB-4505-A123-2C5725601532}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA66DBFB-F837-43E8-8845-66F1FDF0E50E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA66DBFB-F837-43E8-8845-66F1FDF0E50E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA66DBFB-F837-43E8-8845-66F1FDF0E50E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA66DBFB-F837-43E8-8845-66F1FDF0E50E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

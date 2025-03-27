@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Sakila.Api;
 using Sakila.Api.BackgroundServices;
 using Sakila.Api.Domain.Abstractions;
+using Sakila.Api.Domain.Models;
 using Sakila.Api.DTO;
 using Sakila.Api.Extensions;
 using Sakila.Api.Filters;
 using Sakila.Api.Hubs;
+using Sakila.Api.Infrastructure;
 using Sakila.Api.Middlewares;
 using Sakila.Api.Services;
 
@@ -36,7 +40,18 @@ builder.Services.AddSignalR();
 
 builder.Services.AddSingleton<IOcrService, ChannelOcrService>();
 
+// dotnet add package HotChocolate.AspNetCore
+builder.Services.AddGraphQLServer().AddQueryType<Query>();
+
+
+builder.Services.AddDbContext<SakilaContext>(options => options.UseInMemoryDatabase("sakilaDb"));
+
 var app = builder.Build();
+
+var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<SakilaContext>();
+var products = app.Services.CreateScope().ServiceProvider.GetRequiredService<IEnumerable<Product>>();
+
+await DatabaseSeeder.SeedAsync(context, products);
 
 app.UseCors();
 
@@ -108,7 +123,7 @@ app.MapPost("/upload", async (IFormFile file) =>
 {
     if (file.Length > 0)
     {
-        var filePath = Path.Combine("Uploads", file.FileName);
+        var filePath = System.IO.Path.Combine("Uploads", file.FileName);
 
         using (var stream = new FileStream(filePath, FileMode.Create))
         {
@@ -158,8 +173,18 @@ app.Map("/sse", async context =>
         await context.Response.WriteAsync($"data: zdarzenie {i}\n\n");
         await context.Response.Body.FlushAsync();
 
-        await Task.Delay(5000); 
+        await Task.Delay(5000);     
     }
+});
+
+
+app.MapGraphQL();
+app.MapNitroApp();
+
+// dotnet add package GraphQL.Server.Ui.Playground
+app.UseGraphQLPlayground("/graphql/playground", new GraphQL.Server.Ui.Playground.PlaygroundOptions
+{
+    GraphQLEndPoint = "/graphql"
 });
 
 //var level = app.Configuration["Logging:LogLevel:Microsoft.AspNetCore"];

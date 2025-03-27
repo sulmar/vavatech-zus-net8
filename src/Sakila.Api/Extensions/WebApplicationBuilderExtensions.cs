@@ -12,7 +12,7 @@ public static class ServiceExtensions
 {
     public static IServiceCollection AddCustomServices(this IServiceCollection services)
     {
-        services.AddFakeRepositories(); // Jeśli masz metodę rozszerzającą dla repozytoriów
+        services.AddRepositories(); // Jeśli masz metodę rozszerzającą dla repozytoriów
         services.AddMappers();
         services.AddValidators();
 
@@ -23,7 +23,7 @@ public static class ServiceExtensions
     {
         services.AddTransient<OrderMapper>();
 
-        return services;    
+        return services;
     }
 
     public static IServiceCollection AddValidators(this IServiceCollection services)
@@ -33,11 +33,11 @@ public static class ServiceExtensions
 
         return services;
     }
-    
 
-    public static IServiceCollection AddFakeRepositories(this IServiceCollection services)
+
+    public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddTransient<IProductRepository, FakeProductRepository>();
+        services.AddTransient<IProductRepository, DbProductRepository>();
         services.Decorate<IProductRepository, CurrencyProductRepository>(); // dotnet add package Scrutor
 
         services.AddTransient<Category>(sp =>
@@ -58,9 +58,9 @@ public static class ServiceExtensions
 
             var products = new List<Product>()
             {
-                            new Product { Id = 1, Name = $"Product 1", Description = "Lorem ipsum", Price = 100m, Category = category },
-                            new Product { Id = 2, Name = $"Product 2", Description = "Lorem ipsum", Price = 100m, Category = category },
-                            new Product { Id = 3, Name = $"Product 3", Description = "Lorem ipsum", Price = 100m, Category = category },
+                new Product { Id = 1, Name = $"Product 1", Description = "Lorem ipsum", Price = 100m, Color = "red", Category = category },
+                new Product { Id = 2, Name = $"Product 2", Description = "Lorem ipsum", Price = 100m, Color = "blue", Category = category },
+                new Product { Id = 3, Name = $"Product 3", Description = "Lorem ipsum", Price = 100m, Color = "red", Category = category },
             };
 
             category.Products = products;
@@ -68,7 +68,7 @@ public static class ServiceExtensions
             return products;
         });
 
-        
+
         services.AddTransient<IEnumerable<Order>>(sp =>
         {
             var customer = new Customer { Id = 1, Name = "Vavatech", HashedPassword = "123" };
@@ -89,7 +89,7 @@ public static class ServiceExtensions
         services.AddScoped<ICurrencyService, NbpApiCurrencyService>();
 
 
-        services.AddScoped<IOrderRepository, FakeOrderRepository>();   
+        services.AddScoped<IOrderRepository, FakeOrderRepository>();
 
 
         return services;

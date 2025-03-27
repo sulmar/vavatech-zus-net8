@@ -158,7 +158,7 @@ app.Map("/sse", async context =>
         await context.Response.WriteAsync($"data: zdarzenie {i}\n\n");
         await context.Response.Body.FlushAsync();
 
-        await Task.Delay(5000);
+        await Task.Delay(5000); 
     }
 });
 

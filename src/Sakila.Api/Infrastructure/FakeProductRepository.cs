@@ -19,4 +19,9 @@ public class FakeProductRepository : IProductRepository
         else
             return null;
     }
+
+    public IEnumerable<Product> GetAll()
+    {
+        return _products.Values;
+    }
 }

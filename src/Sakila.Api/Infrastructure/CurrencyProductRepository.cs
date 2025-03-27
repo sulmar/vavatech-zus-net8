@@ -1,5 +1,6 @@
 ﻿using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.Domain.Models;
+
 namespace Sakila.Api.Infrastructure;
 
 public class CurrencyProductRepository : IProductRepository
@@ -19,10 +20,27 @@ public class CurrencyProductRepository : IProductRepository
 
         if (product != null)
         {
-            product.Price = product.Price * currencyService.GetCurrencyRatio("EUR");
+            RecalculatePrice(product);
         }
 
         return product;
 
+    }
+
+    private void RecalculatePrice(Product? product)
+    {
+        product.Price = product.Price * currencyService.GetCurrencyRatio("EUR");
+    }
+
+    public IEnumerable<Product> GetAll()
+    {
+        var products = _decoratedProductRepository.GetAll();
+
+        foreach (var product in products)
+        {
+            RecalculatePrice(product);
+        }
+
+        return products;
     }
 }

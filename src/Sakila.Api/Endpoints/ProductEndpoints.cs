@@ -10,6 +10,8 @@ public static class ProductEndpoints
 {
     public static RouteGroupBuilder MapProductsApi(this RouteGroupBuilder group)
     {
+        group.MapGet("/", (IProductRepository repository) => repository.GetAll());
+
         group.MapGet("/{id:int}", (int id, IProductRepository repository) =>
         {
             Product product = repository.Get(id);

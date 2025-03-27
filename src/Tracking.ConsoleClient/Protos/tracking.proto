@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace ="Tracking.Api";
+
+package tracking;
+
+service TrackingService {
+	rpc AddLocation (AddLocationRequest) returns (AddLocationResponse);	
+}
+
+message AddLocationRequest {
+	string plate_number = 1;
+	float latitude = 2;
+	float longitude = 3;
+	int32 speed = 4;
+}
+
+message AddLocationResponse {
+	bool is_confirmed = 1;
+}

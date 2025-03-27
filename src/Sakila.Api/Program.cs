@@ -147,6 +147,20 @@ app.MapGet("/documents/{id:int}", (int id) =>
 app.MapHub<DashboardHub>("/signalr/dashboard");
 app.MapHub<DocumentHub>("/signalr/documents");
 
+app.Map("/sse", async context =>
+{
+    context.Response.ContentType = "text/event-stream";
+    context.Response.Headers["Connection"] = "keep-alive";
+    context.Response.Headers["Cache-Control"] = "no-cache";
+
+    for (int i = 0; i < 10; i++)
+    {
+        await context.Response.WriteAsync($"data: zdarzenie {i}\n\n");
+        await context.Response.Body.FlushAsync();
+
+        await Task.Delay(5000);
+    }
+});
 
 //var level = app.Configuration["Logging:LogLevel:Microsoft.AspNetCore"];
 //var url1 = app.Configuration.GetValue<string>("NbpApiService:Url");

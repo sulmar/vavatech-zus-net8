@@ -18,7 +18,8 @@ public class JwtTokenService : ITokenService
             new Claim(ClaimTypes.Name, identity.Username),
             new Claim(ClaimTypes.Email, identity.Email),
             new Claim(ClaimTypes.GivenName, identity.FirstName),
-            new Claim(ClaimTypes.Surname, identity.LastName)
+            new Claim(ClaimTypes.Surname, identity.LastName),
+            new Claim("DateOfBirth", identity.DateOfBirth.Value.ToShortDateString())
         });
 
         claimsIdentity.AddClaims(identity.Roles.Select(role => new Claim(ClaimTypes.Role, role)));

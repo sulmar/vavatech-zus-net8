@@ -6,26 +6,16 @@ namespace Auth.Api.Infrastructure;
 
 public class FakeUserIdentityRepository : IUserIdentityRepository
 {
-    private readonly IPasswordHasher<UserIdentity> passwordHasher;
-
     private IDictionary<string, UserIdentity> _users = new Dictionary<string, UserIdentity>();
 
-    public FakeUserIdentityRepository(IPasswordHasher<UserIdentity> passwordHasher)
+    public FakeUserIdentityRepository(IPasswordHasher<UserIdentity> passwordHasher, List<UserIdentity> userIdentities)
     {
-        this.passwordHasher = passwordHasher;
+        _users = userIdentities.ToDictionary(x => x.Username, x => x);
 
-        var userIdentity = new UserIdentity
+        foreach (var userIdentity in _users.Values)
         {
-            FirstName = "John",
-            LastName = "Smith",
-            Email = "john@domain.com",
-            Username = "John",
-            Roles = ["Admin", "User"]
-        };
-
-        userIdentity.HashedPassword = passwordHasher.HashPassword(userIdentity, "123");
-
-        _users.Add(userIdentity.Username, userIdentity);
+            userIdentity.HashedPassword = passwordHasher.HashPassword(userIdentity, "123");
+        }
     }
 
     public Task<UserIdentity> GetUserIdentityAsync(string username)

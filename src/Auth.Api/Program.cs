@@ -8,17 +8,41 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
-builder.Services.AddSingleton<IRefreshTokenRepository, InMemoryRefreshTokenRepository>();  
+builder.Services.AddSingleton<IRefreshTokenRepository, InMemoryRefreshTokenRepository>();
 builder.Services.AddScoped<IUserIdentityRepository, FakeUserIdentityRepository>();
 builder.Services.AddSingleton<IPasswordHasher<UserIdentity>, PasswordHasher<UserIdentity>>();
+
+builder.Services.AddSingleton<List<UserIdentity>>(sp =>
+{
+    return new List<UserIdentity>()
+    {  
+        new UserIdentity
+        {
+            FirstName = "John",
+            LastName = "Smith",
+            Email = "john@domain.com",
+            Username = "John",
+            DateOfBirth = new DateTime(1990, 12, 1),
+            Roles = ["Admin", "User"]
+        }, 
+        new UserIdentity
+        {
+            FirstName = "Kate",
+            LastName = "Smith",
+            Email = "kate@domain.com",
+            Username = "Kate",
+            DateOfBirth = new DateTime(2010, 12, 1),
+            Roles = ["User"]
+        } };
+});
 
 var app = builder.Build();
 
 app.MapGet("/", () => Results.Redirect("login.html"));
 
 app.MapPost("/api/token/create", async ([FromForm] LoginRequest request, IAuthService authService, ITokenService tokenService, IRefreshTokenService refreshTokenService) =>
-{    
-    var result = await authService.AuthorizeAsync(request.Username, request.Password);   
+{
+    var result = await authService.AuthorizeAsync(request.Username, request.Password);
 
     if (result.IsAuthorized)
     {

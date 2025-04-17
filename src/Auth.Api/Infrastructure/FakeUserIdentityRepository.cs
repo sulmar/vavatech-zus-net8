@@ -20,7 +20,7 @@ public class FakeUserIdentityRepository : IUserIdentityRepository
             LastName = "Smith",
             Email = "john@domain.com",
             Username = "John",
-
+            Roles = ["Admin", "User"]
         };
 
         userIdentity.HashedPassword = passwordHasher.HashPassword(userIdentity, "123");

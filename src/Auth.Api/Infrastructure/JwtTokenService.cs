@@ -21,6 +21,8 @@ public class JwtTokenService : ITokenService
             new Claim(ClaimTypes.Surname, identity.LastName)
         });
 
+        claimsIdentity.AddClaims(identity.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
         var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_long_256_bits_secret_key_your"));
         var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 

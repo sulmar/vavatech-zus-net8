@@ -28,7 +28,7 @@ public class JwtTokenService : ITokenService
             issuer: "your_issuer",
             audience: "your_audience",
             claims: claimsIdentity.Claims,
-            expires: DateTime.UtcNow.AddMinutes(30),
+            expires: DateTime.UtcNow.AddMinutes(1),
             signingCredentials: credentials
         );
 
@@ -38,4 +38,3 @@ public class JwtTokenService : ITokenService
         return token;
     }
 }
-    

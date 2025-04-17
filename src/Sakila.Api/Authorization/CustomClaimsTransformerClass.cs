@@ -3,6 +3,7 @@ using System.Security.Claims;
 
 namespace Sakila.Api.Authorization;
 
+
 public class CustomClaimsTransformer : IClaimsTransformation
 {
     public Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)

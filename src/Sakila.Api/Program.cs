@@ -126,7 +126,16 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddSingleton<IAuthorizationHandler, AgeRequirmentHandler>();
 builder.Services.AddSingleton<IAuthorizationHandler, DocumentOwnerRequrimentHandler>();
 
+//builder.Services.AddScoped<IClaimsTransformation, CustomClaimsTransformer>();
+//builder.Services.AddScoped<IClaimsTransformation, PermissionClaimsTransformer>();
+
+
 builder.Services.AddScoped<IClaimsTransformation, CustomClaimsTransformer>();
+// builder.Services.AddScoped<IClaimsTransformation, PermissionClaimsTransformer>();
+// builder.Services.AddScoped<IClaimsTransformation, CompositeClaimsTransformer>();
+
+builder.Services.AddScoped<IPermissionService, FakePermissionService>();
+
 
 var app = builder.Build();
 

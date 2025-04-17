@@ -126,13 +126,20 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddSingleton<IAuthorizationHandler, AgeRequirmentHandler>();
 builder.Services.AddSingleton<IAuthorizationHandler, DocumentOwnerRequrimentHandler>();
 
-//builder.Services.AddScoped<IClaimsTransformation, CustomClaimsTransformer>();
-//builder.Services.AddScoped<IClaimsTransformation, PermissionClaimsTransformer>();
+builder.Services.AddScoped<CustomClaimsTransformer>();
+builder.Services.AddScoped<PermissionClaimsTransformer>();
 
-
-builder.Services.AddScoped<IClaimsTransformation, CustomClaimsTransformer>();
-// builder.Services.AddScoped<IClaimsTransformation, PermissionClaimsTransformer>();
-// builder.Services.AddScoped<IClaimsTransformation, CompositeClaimsTransformer>();
+// Rejestracja kompozycji
+builder.Services.AddScoped<IClaimsTransformation>( sp =>
+{
+    var transformers = new List<IClaimsTransformation>
+    {
+        sp.GetRequiredService<CustomClaimsTransformer>(),
+        sp.GetRequiredService<PermissionClaimsTransformer>()
+    };
+    
+    return new CompositeClaimsTransformer(transformers);
+});
 
 builder.Services.AddScoped<IPermissionService, FakePermissionService>();
 
@@ -172,7 +179,8 @@ app.UseSwaggerUI();
 
 app.MapGet("/ping", () => "pong").RequireAuthorization(options => options
     .RequireRole("Admin")
-    .RequireClaim("CustomClaim"));
+    .RequireClaim("CustomClaim")
+    .RequirePermission("print")); // W³asna metoda rozszerzaj¹ca
 
 // dotnet add package AspNetCore.HealthChecks.UI.Client
 app.MapHealthChecks("/hc", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions

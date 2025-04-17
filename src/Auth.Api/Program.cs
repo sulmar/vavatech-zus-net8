@@ -1,12 +1,14 @@
 using Auth.Api.Abstractions;
 using Auth.Api.Infrastructure;
 using Auth.Api.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<IUserIdentityRepository, FakeUserIdentityRepository>();
+builder.Services.AddSingleton<IPasswordHasher<UserIdentity>, PasswordHasher<UserIdentity>>();
 
 var app = builder.Build();
 

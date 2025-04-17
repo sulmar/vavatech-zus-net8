@@ -1,4 +1,5 @@
 using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -125,6 +126,8 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddSingleton<IAuthorizationHandler, AgeRequirmentHandler>();
 builder.Services.AddSingleton<IAuthorizationHandler, DocumentOwnerRequrimentHandler>();
 
+builder.Services.AddScoped<IClaimsTransformation, CustomClaimsTransformer>();
+
 var app = builder.Build();
 
 var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<SakilaContext>();
@@ -158,7 +161,9 @@ app.UseStaticFiles(); // Obs³uga ¿¹dañ statycznych plików (np. stron, zdjêæ, skr
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.MapGet("/ping", () => "pong").RequireAuthorization(options=>options.RequireRole("Admin"));
+app.MapGet("/ping", () => "pong").RequireAuthorization(options => options
+    .RequireRole("Admin")
+    .RequireClaim("CustomClaim"));
 
 // dotnet add package AspNetCore.HealthChecks.UI.Client
 app.MapHealthChecks("/hc", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
@@ -243,9 +248,9 @@ app.MapPost("/documents", async (HttpContext context, IOcrService service) =>
     return Results.Accepted();
 }).DisableAntiforgery();
 
-app.MapGet("/documents/{id:int}", async (int id, 
-    IDocumentRepository repository, 
-    IAuthorizationService authorizationService, 
+app.MapGet("/documents/{id:int}", async (int id,
+    IDocumentRepository repository,
+    IAuthorizationService authorizationService,
     HttpContext context) =>
 {
     var document = repository.Get(id);

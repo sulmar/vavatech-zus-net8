@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
+builder.Services.AddScoped<IUserIdentityRepository, FakeUserIdentityRepository>();
 
 var app = builder.Build();
 

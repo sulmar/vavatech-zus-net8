@@ -14,3 +14,8 @@ public interface ITokenService
 {
     string CreateAccessToken(UserIdentity identity);
 }
+
+public interface IUserIdentityRepository
+{
+    Task<UserIdentity> GetUserIdentityAsync(string username);
+}

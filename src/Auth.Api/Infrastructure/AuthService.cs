@@ -5,26 +5,30 @@ namespace Auth.Api.Infrastructure;
 
 public class AuthService : IAuthService
 {
-    public Task<AuthorizeResult> AuthorizeAsync(string username, string password)
-    {
-        // TODO: Przenieść do repozytorium
-        var userIdentity = new UserIdentity 
-        { 
-            FirstName = "John", 
-            LastName = "Smith", 
-            Email = "john@domain.com", 
-            Username = "John", 
-            HashedPassword = "123" };
+    private readonly IUserIdentityRepository repository;
 
-        if (username == userIdentity.Username && password == userIdentity.HashedPassword)
+    public AuthService(IUserIdentityRepository repository)
+    {
+        this.repository = repository;
+    }
+
+    public async Task<AuthorizeResult> AuthorizeAsync(string username, string password)
+    {
+        var userIdentity = await repository.GetUserIdentityAsync(username);
+
+        if (IsValid(username, password, userIdentity))
         {
-            return Task.FromResult(new AuthorizeResult(true, userIdentity));
-            
+            return new AuthorizeResult(true, userIdentity);
+
         }
 
+        return new AuthorizeResult(false, null);
 
-        return Task.FromResult(new AuthorizeResult(false, null));
+    }
 
+    private static bool IsValid(string username, string password, UserIdentity userIdentity)
+    {
+        return username == userIdentity.Username && password == userIdentity.HashedPassword;
     }
 }
     

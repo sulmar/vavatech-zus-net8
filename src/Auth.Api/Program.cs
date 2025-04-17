@@ -40,7 +40,7 @@ var app = builder.Build();
 
 app.MapGet("/", () => Results.Redirect("login.html"));
 
-app.MapPost("/api/token/create", async ([FromForm] LoginRequest request, IAuthService authService, ITokenService tokenService, IRefreshTokenService refreshTokenService) =>
+app.MapPost("/api/token/create", async ([FromForm] LoginRequest request, IAuthService authService, ITokenService tokenService, IRefreshTokenService refreshTokenService, HttpContext context) =>
 {
     var result = await authService.AuthorizeAsync(request.Username, request.Password);
 
@@ -48,6 +48,23 @@ app.MapPost("/api/token/create", async ([FromForm] LoginRequest request, IAuthSe
     {
         var accessToken = tokenService.CreateAccessToken(result.Identity);
         var refreshToken = refreshTokenService.CreateAndStoreRefreshToken(request.Username);
+
+        context.Response.Cookies.Append("access_token", accessToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,            
+            MaxAge = TimeSpan.FromMinutes(1)
+        });
+
+        context.Response.Cookies.Append("refresh_token", refreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            MaxAge = TimeSpan.FromDays(30)
+        });
+
 
         return Results.Ok(new
         {

@@ -131,7 +131,7 @@ app.UseStaticFiles(); // Obs³uga ¿¹dañ statycznych plików (np. stron, zdjêæ, skr
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.MapGet("/ping", () => "pong").RequireAuthorization();
+app.MapGet("/ping", () => "pong").RequireAuthorization(options=>options.RequireRole("Admin"));
 
 // dotnet add package AspNetCore.HealthChecks.UI.Client
 app.MapHealthChecks("/hc", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions

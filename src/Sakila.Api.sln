@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.ConsoleClient", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitoring.Web", "Monitoring.Web\Monitoring.Web.csproj", "{FA66DBFB-F837-43E8-8845-66F1FDF0E50E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth.Api", "Auth.Api\Auth.Api.csproj", "{8BBBD3C8-F096-4E13-8DE6-1CD0DCEFCE5E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{FA66DBFB-F837-43E8-8845-66F1FDF0E50E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA66DBFB-F837-43E8-8845-66F1FDF0E50E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA66DBFB-F837-43E8-8845-66F1FDF0E50E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BBBD3C8-F096-4E13-8DE6-1CD0DCEFCE5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BBBD3C8-F096-4E13-8DE6-1CD0DCEFCE5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BBBD3C8-F096-4E13-8DE6-1CD0DCEFCE5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BBBD3C8-F096-4E13-8DE6-1CD0DCEFCE5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

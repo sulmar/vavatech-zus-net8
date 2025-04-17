@@ -1,10 +1,12 @@
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Sakila.Api;
+using Sakila.Api.Authorization;
 using Sakila.Api.BackgroundServices;
 using Sakila.Api.Domain.Abstractions;
 using Sakila.Api.Domain.Models;
@@ -96,7 +98,17 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdultPolicy", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("DateOfBirth");
+        policy.Requirements.Add(new AgeRequirment(18));
+    });
+});
+
+builder.Services.AddSingleton<IAuthorizationHandler, AgeRequirmentHandler>();
 
 var app = builder.Build();
 
@@ -163,7 +175,7 @@ app.MapGet("/html", ([FromQuery] string name) =>
 
     return Results.Content(html, "text/html");
 
-});
+}).RequireAuthorization("AdultPolicy");
 
 
 // Atrybut [FromForm] pozwala na deserializacjê obiektu zakodowanego za pomoc¹ x-www-form-urlencoded

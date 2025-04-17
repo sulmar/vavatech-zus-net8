@@ -8,14 +8,3 @@ public interface IAuthService
 }
 
 public record AuthorizeResult(bool IsAuthorized, UserIdentity Identity);
-
-
-public interface ITokenService
-{
-    string CreateAccessToken(UserIdentity identity);
-}
-
-public interface IUserIdentityRepository
-{
-    Task<UserIdentity> GetUserIdentityAsync(string username);
-}

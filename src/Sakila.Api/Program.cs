@@ -91,6 +91,8 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidIssuer = "your_issuer",
         ValidAudience = "your_audience",
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero       // Domyœlnie tolerancja 5 minut
     };
 });
 

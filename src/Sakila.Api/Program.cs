@@ -1,7 +1,9 @@
 using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.IdentityModel.Tokens;
 using Sakila.Api;
 using Sakila.Api.BackgroundServices;
 using Sakila.Api.Domain.Abstractions;
@@ -13,6 +15,7 @@ using Sakila.Api.Hubs;
 using Sakila.Api.Infrastructure;
 using Sakila.Api.Middlewares;
 using Sakila.Api.Services;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +77,25 @@ builder.Services.AddHealthChecks()
     .AddSignalRHub("https://localhost:7285/signalr/documents", "SignalR Hub Documents")
     .AddSignalRHub("https://localhost:7285/signalr/dashboard", "SignalR Hub Dashboard");
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_long_256_bits_secret_key_your")),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidIssuer = "your_issuer",
+        ValidAudience = "your_audience",
+    };
+});
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<SakilaContext>();
@@ -82,6 +104,9 @@ var products = app.Services.CreateScope().ServiceProvider.GetRequiredService<IEn
 await DatabaseSeeder.SeedAsync(context, products);
 
 app.UseCors();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseStopwatch();
 app.UseLogger();
@@ -104,7 +129,7 @@ app.UseStaticFiles(); // Obs³uga ¿¹dañ statycznych plików (np. stron, zdjêæ, skr
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.MapGet("/ping", () => "pong");
+app.MapGet("/ping", () => "pong").RequireAuthorization();
 
 // dotnet add package AspNetCore.HealthChecks.UI.Client
 app.MapHealthChecks("/hc", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions

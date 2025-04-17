@@ -96,6 +96,20 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,        // Weryfikacja czasu ¿ycia tokenu
         ClockSkew = TimeSpan.Zero       // Domyœlnie tolerancja 5 minut
     };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var token = context.Request.Cookies["access_token"];
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                context.Token = token;
+            }
+            return Task.CompletedTask;
+        },
+    };
 });
 
 builder.Services.AddAuthorization(options =>

@@ -91,7 +91,7 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidIssuer = "your_issuer",
         ValidAudience = "your_audience",
-        ValidateLifetime = true,
+        ValidateLifetime = true,        // Weryfikacja czasu ¿ycia tokenu
         ClockSkew = TimeSpan.Zero       // Domyœlnie tolerancja 5 minut
     };
 });

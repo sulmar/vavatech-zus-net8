@@ -10,7 +10,7 @@ builder.Services.AddScoped<IUserIdentityRepository, FakeUserIdentityRepository>(
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello Auth.Api!");
+app.MapGet("/", () => Results.Redirect("login.html"));
 
 app.MapPost("/api/token/create", async ([FromForm] LoginRequest request, IAuthService authService, ITokenService tokenService) =>
 {    
@@ -30,5 +30,8 @@ app.MapPost("/api/token/create", async ([FromForm] LoginRequest request, IAuthSe
 
     return Results.Unauthorized();
 }).DisableAntiforgery();
+
+app.UseStaticFiles();
+
 
 app.Run();

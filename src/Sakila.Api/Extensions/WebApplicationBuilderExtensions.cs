@@ -91,6 +91,8 @@ public static class ServiceExtensions
 
         services.AddScoped<IOrderRepository, FakeOrderRepository>();
 
+        services.AddScoped<IDocumentRepository, FakeDocumentRepository>();
+
 
         return services;
     }

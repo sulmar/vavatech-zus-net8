@@ -109,6 +109,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddSingleton<IAuthorizationHandler, AgeRequirmentHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, DocumentOwnerRequrimentHandler>();
 
 var app = builder.Build();
 
@@ -228,10 +229,20 @@ app.MapPost("/documents", async (HttpContext context, IOcrService service) =>
     return Results.Accepted();
 }).DisableAntiforgery();
 
-app.MapGet("/documents/{id:int}", (int id) =>
+app.MapGet("/documents/{id:int}", async (int id, 
+    IDocumentRepository repository, 
+    IAuthorizationService authorizationService, 
+    HttpContext context) =>
 {
-    return Results.Ok();
-});
+    var document = repository.Get(id);
+
+    var result = await authorizationService.AuthorizeAsync(context.User, document, new DocumentOwnerRequriment());
+
+    if (!result.Succeeded)
+        return Results.Forbid();
+
+    return Results.Ok(document);
+}).RequireAuthorization();
 
 
 app.MapHub<DashboardHub>("/signalr/dashboard");
